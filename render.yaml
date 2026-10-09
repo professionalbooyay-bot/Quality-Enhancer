@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: quality-enhancer-studio
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_PASSWORD
+        sync: false
+      - key: TOPAZ_API_KEY
+        sync: false
