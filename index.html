@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0a0d16">
+  <meta name="description" content="Personal AI image and video quality enhancement studio.">
+  <title>Quality Enhancer Studio</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Quality Enhancer Studio home">
+      <span class="brand-mark">Q<span>+</span></span>
+      <span><strong>QUALITY</strong><small>ENHANCER STUDIO</small></span>
+    </a>
+    <div class="top-actions"><span class="status-dot"></span><span id="apiStatus">Checking API…</span><a class="docs-link" href="https://developer.topazlabs.com/" target="_blank" rel="noreferrer">Topaz API ↗</a></div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow"><span class="sparkle">✦</span> AI-POWERED MEDIA RESTORATION</div>
+      <h1>Make every detail<br><span>count.</span></h1>
+      <p>Bring clarity back to your photos and videos with Topaz AI enhancement. Your personal creative workspace.</p>
+    </section>
+
+    <section class="workspace">
+      <div class="panel">
+        <div class="panel-head"><div><span class="step">01</span><h2>Choose your media</h2></div><span class="subtle">Max 100 MB / file</span></div>
+        <div class="tabs" role="tablist">
+          <button class="tab active" id="imageTab" data-mode="image" role="tab" aria-selected="true"><span>▧</span> Image</button>
+          <button class="tab" id="videoTab" data-mode="video" role="tab" aria-selected="false"><span>▷</span> Video</button>
+        </div>
+        <label class="dropzone" id="dropzone" for="mediaInput">
+          <input id="mediaInput" type="file" accept="image/jpeg,image/png,image/webp,image/tiff">
+          <span class="upload-icon">↑</span>
+          <strong id="dropTitle">Drop your image here</strong>
+          <span class="muted" id="dropHint">or tap to browse your files</span>
+          <span class="file-types" id="fileTypes">JPG · PNG · WEBP · TIFF</span>
+        </label>
+        <div class="file-card hidden" id="fileCard">
+          <div class="file-icon" id="fileIcon">IMG</div>
+          <div class="file-meta"><strong id="fileName">photo.jpg</strong><small id="fileSize">0 MB</small></div>
+          <button class="icon-btn" id="removeFile" title="Remove file" aria-label="Remove file">×</button>
+        </div>
+
+        <div class="settings">
+          <div class="section-label">ENHANCEMENT SETTINGS</div>
+          <label class="field-label" for="modelSelect">AI model</label>
+          <select id="modelSelect">
+            <option value="Standard V2">Standard V2 · Balanced</option>
+            <option value="High Fidelity V2">High Fidelity V2 · Preserve detail</option>
+            <option value="Wonder 3.5">Wonder 3.5 · Generative recovery</option>
+            <option value="Bloom 2">Bloom 2 · Creative detail</option>
+          </select>
+          <div class="control-grid">
+            <div><label class="field-label" for="scaleSelect">Output scale</label><select id="scaleSelect"><option value="1">1× · Original size</option><option value="2" selected>2× · Upscale</option><option value="4">4× · High upscale</option></select></div>
+            <div><label class="field-label" for="formatSelect">Output format</label><select id="formatSelect"><option value="jpeg">JPEG</option><option value="png">PNG</option><option value="webp">WEBP</option></select></div>
+          </div>
+          <div class="slider-row"><div><label for="sharpen">Sharpen</label><span id="sharpenValue">30%</span></div><input id="sharpen" type="range" min="0" max="100" value="30"></div>
+          <div class="slider-row"><div><label for="denoise">Denoise</label><span id="denoiseValue">25%</span></div><input id="denoise" type="range" min="0" max="100" value="25"></div>
+          <div class="slider-row"><div><label for="compression">Compression recovery</label><span id="compressionValue">35%</span></div><input id="compression" type="range" min="0" max="100" value="35"></div>
+          <label class="toggle-row"><span><strong>Face enhancement</strong><small>Improve face detail where supported</small></span><input id="faceEnhancement" type="checkbox"><span class="toggle"></span></label>
+          <div class="video-note hidden" id="videoNote">Video processing uses Topaz's cloud Video API. It may take longer and consume API credits. Use a short test clip first.</div>
+        </div>
+        <button class="primary-btn" id="enhanceBtn" disabled><span>✦</span><span id="enhanceLabel">Enhance image</span><span class="btn-arrow">↗</span></button>
+        <p class="fineprint">Processing uses your own Topaz API account. API usage may incur charges.</p>
+      </div>
+
+      <div class="panel preview-panel">
+        <div class="panel-head"><div><span class="step">02</span><h2>Preview & export</h2></div><span class="preview-pill" id="previewPill">WAITING FOR MEDIA</span></div>
+        <div class="preview-stage" id="previewStage">
+          <div class="empty-preview" id="emptyPreview">
+            <div class="preview-art"><span>✦</span><span>▧</span><span>✧</span></div>
+            <strong>Your preview appears here</strong>
+            <p>Choose an image or video to start.</p>
+          </div>
+          <img id="originalPreview" class="media-preview hidden" alt="Original image preview">
+          <video id="originalVideo" class="media-preview hidden" controls playsinline></video>
+          <div class="result-overlay hidden" id="resultOverlay">
+            <img id="enhancedPreview" alt="Enhanced result preview">
+            <span class="result-label">ENHANCED</span>
+          </div>
+          <div class="progress-wrap hidden" id="progressWrap">
+            <div class="progress-orb"><span>✦</span></div>
+            <strong id="progressTitle">Enhancing your media…</strong>
+            <p id="progressText">Sending your file securely to Topaz.</p>
+            <div class="progress-track"><span id="progressBar"></span></div>
+            <small id="progressPercent">0%</small>
+          </div>
+        </div>
+        <div class="compare-row hidden" id="compareRow"><span>Original</span><input id="compareSlider" type="range" min="0" max="100" value="50" aria-label="Before and after comparison"><span>Enhanced</span></div>
+        <div class="result-info hidden" id="resultInfo"><span class="success-check">✓</span><div><strong>Enhancement complete</strong><small id="resultMeta">Your result is ready.</small></div><button id="downloadBtn" class="download-btn">↓ Download</button></div>
+        <div class="preview-footer"><div class="privacy-mark">⌑</div><span><strong>Private by design</strong><small>Your API key stays on the server, not in the browser.</small></span></div>
+      </div>
+    </section>
+    <footer><span>QUALITY ENHANCER STUDIO</span><span>Personal project · Powered by Topaz Labs API</span></footer>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
